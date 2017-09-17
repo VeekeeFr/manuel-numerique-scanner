@@ -2,7 +2,7 @@
 Scanner for a school manual's website
 
 # Usage
-./scan.sh [-book <book id>]
+./scan.sh [-book "book_id"]
 Default will scan a whole range of books
 
 # Note
