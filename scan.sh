@@ -51,7 +51,7 @@ function processBook
 			wget -q http://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} -O${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} || echo "			! ERROR"
 		done
 		cd ${BOOK_DIR} && tar czvf ${SCRIPTPATH}/${1}_${2}_${3}.tar.gz * && cd -
-		rf -rf ${BOOK_DIR}
+		#rm -rf ${BOOK_DIR}
 	else
 		echo "		[SKIPPED]"
 	fi
