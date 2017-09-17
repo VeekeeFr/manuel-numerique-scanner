@@ -21,7 +21,6 @@ do
 			BOOKID="${1}"
 			;;
 		-? | --? | -h | --h | -help | --help )
-			echo "aaaaaaaaaaaaaaaaaa"
 			usage "0"
 			;;
 		*)
@@ -68,7 +67,6 @@ function processBook
 
 for bookcat in ${BOOKCAT}
 do
-	echo "${bookcat}"
 	for book in ${BOOKID}
 	do
 		echo "Scanning ${book}"
