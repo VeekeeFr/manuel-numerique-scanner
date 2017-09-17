@@ -1,12 +1,13 @@
 #!/bin/bash
 
-SCRIPTPATH=`dirname $0`
-SCRIPTNAME=`basename $0`
+SCRIPTFULLNAME=`realpath $0`
+SCRIPTPATH=`dirname ${SCRIPTFULLNAME}`
+SCRIPTNAME=`basename ${SCRIPTFULLNAME}`
 
 function usage
 {
 	echo "Usage:"
-	echo "$0 [-book <book-id>]"
+	echo "${0} [-book <book-id>]"
 	exit ${1}
 }
 
@@ -58,7 +59,10 @@ function processBook
 		cp ${SCRIPTPATH}/index.html ${BOOK_DIR}
 		cat ${BOOK_DIR}/index.html | sed "s#{{ title }}#${BOOK_TITLE}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
 		cat ${BOOK_DIR}/index.html | sed "s#{{ pagelist }}#${BOOK_PAGELIST}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
-		cd ${BOOK_DIR} && tar czvf ${SCRIPTPATH}/${1}_${2}_${3}.tar.gz * && cd -
+		cd ${BOOK_DIR}
+		tar czvf ${BOOK_TAR} *
+		cd -
+		echo "		-> Generated archive: ${BOOK_TAR}"
 		rm -rf ${BOOK_DIR}
 	else
 		echo "		[SKIPPED]"
