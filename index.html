@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>{{ title }}</title>
+        <meta charset="utf-8"/>
+	<style>
+a:link, a:visited {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a#next:link, a#next:visited {
+    border: 2px solid green;
+}
+a#next:hover, a#next:active {
+    background-color: green;
+    color: white;
+}
+
+a#previous:link, a#previous:visited {
+    border: 2px solid red;
+}
+a#previous:hover, a#previous:active {
+    background-color: red;
+    color: white;
+}
+
+a#toc:link, a#toc:visited {
+    border: 2px solid navy;
+}
+a#toc:hover, a#toc:active {
+    background-color: navy;
+    color: white;
+}
+
+td,th {
+	text-align: center;
+}
+	</style>
+	<script language="javascript">
+		var pageList = [ "TOC.xhtml", {{ pagelist }} ];
+
+		var basepath = document.location.href;
+		var startIndex = (basepath.indexOf('\\') >= 0 ? basepath.lastIndexOf('\\') : basepath.lastIndexOf('/'));
+		basepath = basepath.substring(0, startIndex + 1);
+
+		function onNext()
+		{
+			var currentPageName = document.getElementById("mycontent").contentWindow.location.href;
+			currentPageName = currentPageName.substring(currentPageName.indexOf(basepath) + basepath.length);
+			var currentIndex = pageList.indexOf(currentPageName);
+			var nextIndex = currentIndex + 1;
+			if (nextIndex >= pageList.length)
+				nextIndex = pageList.length - 1;
+			document.getElementById("mycontent").contentWindow.location.href = pageList[nextIndex];
+		}
+
+		function onPrevious()
+		{
+			var currentPageName = document.getElementById("mycontent").contentWindow.location.href;
+			currentPageName = currentPageName.substring(currentPageName.indexOf(basepath) + basepath.length);
+			var currentIndex = pageList.indexOf(currentPageName);
+			var nextIndex = currentIndex - 1;
+			if (nextIndex == -1)
+				nextIndex = 0;
+			document.getElementById("mycontent").contentWindow.location.href = pageList[nextIndex];
+		}
+
+		function onTOC()
+		{
+			document.getElementById("mycontent").contentWindow.location.href = "TOC.xhtml";
+		}
+	</script>
+    </head>
+	<body>
+		<table border="0" width="1024"><tr ><td width="10%"><a href="javascript:onTOC();" id="toc">Sommaire</a></td><td width="40%"><a href="javascript:onPrevious();" id="previous">Précédent</a></td><td width="40%"><a href="javascript:onNext();" id="next">Suivant</a></td></tr></table>
+		<iframe id="mycontent" src="TOC.xhtml" height="1000" width="100%" frameborder="0">
+		Votre navigateur ne supporte pas les iframes
+		</iframe>
+	</body>
+</html>
