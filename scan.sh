@@ -44,20 +44,23 @@ function processBook
 		wget -q http://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/content.opf -O${BOOK_DIR}/content.txt
 		BOOK_TITLE=`cat ${BOOK_DIR}/content.txt | grep "<dc:title id=\"title1\">" | awk -F'>' '{ print $2 }' | awk -F'<' '{ print $1 }'`
 		BOOK_PAGELIST=`cat ${BOOK_DIR}/content.txt | grep "\.xhtml" | grep "Page" | awk -F'href="' '{ print $2 }' | awk -F'"' '{ print $1 }' | tr '\n' ',' | sed 's#,#","#g'`
-		BOOK_PAGELIST="\"${BOOK_PAGELIST:0:-2}"
-		for file in `cat ${BOOK_DIR}/content.txt | grep "<item " | awk -F'href=' '{ print $2 }' | awk -F'"' '{ print $2 }'`
-		do
-			RESSOURCE_FOLDER=`dirname $file`
-			RESSOURCE_NAME=`basename $file`
-			mkdir -p ${BOOK_DIR}/${RESSOURCE_FOLDER}
-			echo "		# Processing file: ${RESSOURCE_NAME} (target: ${BOOK_DIR}/${RESSOURCE_FOLDER})"
-			wget -q http://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} -O${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} || echo "			! ERROR"
-		done
+		if [ "x${BOOK_PAGELIST}" != "x" ]
+		then
+			BOOK_PAGELIST="\"${BOOK_PAGELIST:0:-2}"
+			for file in `cat ${BOOK_DIR}/content.txt | grep "<item " | awk -F'href=' '{ print $2 }' | awk -F'"' '{ print $2 }'`
+			do
+				RESSOURCE_FOLDER=`dirname $file`
+				RESSOURCE_NAME=`basename $file`
+				mkdir -p ${BOOK_DIR}/${RESSOURCE_FOLDER}
+				echo "		# Processing file: ${RESSOURCE_NAME} (target: ${BOOK_DIR}/${RESSOURCE_FOLDER})"
+				wget -q http://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} -O${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} || echo "			! ERROR"
+			done
+		fi
 		cp ${SCRIPTPATH}/index.html ${BOOK_DIR}
 		cat ${BOOK_DIR}/index.html | sed "s#{{ title }}#${BOOK_TITLE}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
 		cat ${BOOK_DIR}/index.html | sed "s#{{ pagelist }}#${BOOK_PAGELIST}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
 		cd ${BOOK_DIR} && tar czvf ${SCRIPTPATH}/${1}_${2}_${3}.tar.gz * && cd -
-		#rm -rf ${BOOK_DIR}
+		rm -rf ${BOOK_DIR}
 	else
 		echo "		[SKIPPED]"
 	fi
