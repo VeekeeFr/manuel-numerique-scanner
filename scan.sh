@@ -77,19 +77,19 @@ function processBook
 
 			echo "		-> Downloading epub"
 			curl -q -o ${BOOK_DIR}/book.epub http://dl.manuel-numerique.com//BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/${3}-1_2-${BOOK_IDENTIFIER}.epub
+
+			echo "		-> Building archive"
+			cp ${SCRIPTPATH}/index.html ${BOOK_DIR}
+			cat ${BOOK_DIR}/index.html | sed "s#{{ title }}#${BOOK_TITLE}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
+			cat ${BOOK_DIR}/index.html | sed "s#{{ pagelist }}#${BOOK_PAGELIST}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
+			cd ${BOOK_DIR}
+			tar czvf ${BOOK_TAR} *
+			cd -
+			echo "		-> Generated archive: ${BOOK_TAR}"
+			rm -rf ${BOOK_DIR}
 		else
 			echo "Failed! Book seems to have gotten away..."
 		fi
-
-		echo "		-> Building archive"
-		cp ${SCRIPTPATH}/index.html ${BOOK_DIR}
-		cat ${BOOK_DIR}/index.html | sed "s#{{ title }}#${BOOK_TITLE}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
-		cat ${BOOK_DIR}/index.html | sed "s#{{ pagelist }}#${BOOK_PAGELIST}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
-		cd ${BOOK_DIR}
-		tar czvf ${BOOK_TAR} *
-		cd -
-		echo "		-> Generated archive: ${BOOK_TAR}"
-		rm -rf ${BOOK_DIR}
 
 		echo "		-> Breezing"
 		sleep ${BOOK_TIMER}
