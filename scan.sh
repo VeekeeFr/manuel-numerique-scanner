@@ -7,7 +7,7 @@ SCRIPTNAME=`basename ${SCRIPTFULLNAME}`
 function usage
 {
 	echo "Usage:"
-	echo "${0} [-cat <cat-id>] [-book <book-id>] [-force]"
+	echo "${0} [-cat <cat-id>] [-book <book-id>] [-book-timer <wait timer beetween books>] [-force]"
 	exit ${1}
 }
 
@@ -15,6 +15,7 @@ BOOKCAT=$(seq 1 9)
 BOOKID=$(seq 1000 4000)
 BORDAS_FILLING="N2JiNDg5MjEwODg3MWI3MDA5NzkxNmNiOWU3MjJlZWY2OTBjNmRkNDZkNjNlMzY1ZjUwYzg2NWNiZDg2ZDk0MjFkNzQ2M2NkMzg4NGE5ZDg4ODU1YmZjZDQ3ZGE4YTk5MDQ0MGUzYzU"
 FORCE_DOWNLOAD=false
+BOOK_TIMER=5
 
 while [ $# -gt 0 ]
 do
@@ -26,6 +27,10 @@ do
 		-b | --b | -book | --book )
 			shift
 			BOOKID="${1}"
+			;;
+		-book-timer | --book-timer )
+			shift
+			BOOK_TIMER="${1}"
 			;;
 		-force | --force )
 			FORCE_DOWNLOAD=true
@@ -85,6 +90,9 @@ function processBook
 		cd -
 		echo "		-> Generated archive: ${BOOK_TAR}"
 		rm -rf ${BOOK_DIR}
+
+		echo "		-> Breezing"
+		sleep ${BOOK_TIMER}
 	else
 		echo "		[SKIPPED]"
 	fi
