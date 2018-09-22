@@ -13,6 +13,7 @@ function usage
 
 BOOKCAT=$(seq 1 9)
 BOOKID=$(seq 1000 4000)
+BORDAS_FILLING="N2JiNDg5MjEwODg3MWI3MDA5NzkxNmNiOWU3MjJlZWY2OTBjNmRkNDZkNjNlMzY1ZjUwYzg2NWNiZDg2ZDk0MjFkNzQ2M2NkMzg4NGE5ZDg4ODU1YmZjZDQ3ZGE4YTk5MDQ0MGUzYzU"
 FORCE_DOWNLOAD=false
 
 while [ $# -gt 0 ]
@@ -53,8 +54,9 @@ function processBook
 	then
 		echo "		-> Storage folder: ${BOOK_DIR}"
 		mkdir -p ${BOOK_DIR}
-		curl -q  -o ${BOOK_DIR}/content.txt https://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/content.opf
+		curl -q  -o ${BOOK_DIR}/content.txt https://biblio.manuel-numerique.com/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/content.opf
 		BOOK_TITLE=`cat ${BOOK_DIR}/content.txt | grep "<dc:title id=\"title1\">" | awk -F'>' '{ print $2 }' | awk -F'<' '{ print $1 }'`
+		BOOK_IDENTIFIER=`cat ${BOOK_DIR}/content.txt | grep "<dc:identifier " | awk -F'>' '{ print $2 }' | awk -F'<' '{ print $1 }'`
 		BOOK_PAGELIST=`cat ${BOOK_DIR}/content.txt | grep "\.xhtml" | grep "Page" | awk -F'href="' '{ print $2 }' | awk -F'"' '{ print $1 }' | tr '\n' ',' | sed 's#,#","#g'`
 		if [ "x${BOOK_PAGELIST}" != "x" ]
 		then
@@ -65,9 +67,12 @@ function processBook
 				RESSOURCE_NAME=`basename $file`
 				mkdir -p ${BOOK_DIR}/${RESSOURCE_FOLDER}
 				echo "		# Processing file: ${RESSOURCE_NAME} (target: ${BOOK_DIR}/${RESSOURCE_FOLDER})"
-				curl -q -o ${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} https://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} || echo "			! ERROR"
+				curl -q -o ${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} https://biblio.manuel-numerique.com/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} || echo "			! ERROR"
 			done
+"
 		fi
+
+		echo "		-> Building archive"
 		cp ${SCRIPTPATH}/index.html ${BOOK_DIR}
 		cat ${BOOK_DIR}/index.html | sed "s#{{ title }}#${BOOK_TITLE}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
 		cat ${BOOK_DIR}/index.html | sed "s#{{ pagelist }}#${BOOK_PAGELIST}#g" > ${BOOK_DIR}/index.html.tmp && mv ${BOOK_DIR}/index.html.tmp ${BOOK_DIR}/index.html
@@ -86,7 +91,7 @@ do
 	for book in ${BOOKID}
 	do
 		echo "Scanning ${book}"
-		curl -q -o /dev/null https://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/1/${bookcat}/${book}/online/OEBPS/content.opf  && processBook 1 ${bookcat} ${book}
+		curl -q -o /dev/null https://biblio.manuel-numerique.com/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/1/${bookcat}/${book}/online/OEBPS/content.opf  && processBook 1 ${bookcat} ${book}
 	done
 done
 
