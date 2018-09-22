@@ -69,7 +69,9 @@ function processBook
 				echo "		# Processing file: ${RESSOURCE_NAME} (target: ${BOOK_DIR}/${RESSOURCE_FOLDER})"
 				curl -q -o ${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} https://biblio.manuel-numerique.com/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} || echo "			! ERROR"
 			done
-"
+
+			echo "		-> Downloading epub"
+			curl -q -o ${BOOK_DIR}/book.epub http://dl.manuel-numerique.com//BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/${3}-1_2-${BOOK_IDENTIFIER}.epub
 		fi
 
 		echo "		-> Building archive"
