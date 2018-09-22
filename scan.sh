@@ -53,7 +53,7 @@ function processBook
 	then
 		echo "		-> Storage folder: ${BOOK_DIR}"
 		mkdir -p ${BOOK_DIR}
-		wget -q http://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/content.opf -O${BOOK_DIR}/content.txt
+		curl -q  -o ${BOOK_DIR}/content.txt https://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/content.opf
 		BOOK_TITLE=`cat ${BOOK_DIR}/content.txt | grep "<dc:title id=\"title1\">" | awk -F'>' '{ print $2 }' | awk -F'<' '{ print $1 }'`
 		BOOK_PAGELIST=`cat ${BOOK_DIR}/content.txt | grep "\.xhtml" | grep "Page" | awk -F'href="' '{ print $2 }' | awk -F'"' '{ print $1 }' | tr '\n' ',' | sed 's#,#","#g'`
 		if [ "x${BOOK_PAGELIST}" != "x" ]
@@ -65,7 +65,7 @@ function processBook
 				RESSOURCE_NAME=`basename $file`
 				mkdir -p ${BOOK_DIR}/${RESSOURCE_FOLDER}
 				echo "		# Processing file: ${RESSOURCE_NAME} (target: ${BOOK_DIR}/${RESSOURCE_FOLDER})"
-				wget -q http://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} -O${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} || echo "			! ERROR"
+				curl -q -o ${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} https://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} || echo "			! ERROR"
 			done
 		fi
 		cp ${SCRIPTPATH}/index.html ${BOOK_DIR}
@@ -86,7 +86,7 @@ do
 	for book in ${BOOKID}
 	do
 		echo "Scanning ${book}"
-		wget -q http://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/1/${bookcat}/${book}/online/OEBPS/content.opf -O/dev/null && processBook 1 ${bookcat} ${book}
+		curl -q -o /dev/null https://biblio.manuel-numerique.com/epubs/BORDAS/bibliomanuels/distrib_gp/1/${bookcat}/${book}/online/OEBPS/content.opf  && processBook 1 ${bookcat} ${book}
 	done
 done
 
