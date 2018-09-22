@@ -7,7 +7,7 @@ SCRIPTNAME=`basename ${SCRIPTFULLNAME}`
 function usage
 {
 	echo "Usage:"
-	echo "${0} [-book <book-id>]"
+	echo "${0} [-cat <cat-id>] [-book <book-id>]"
 	exit ${1}
 }
 
@@ -17,6 +17,10 @@ BOOKID=$(seq 1000 4000)
 while [ $# -gt 0 ]
 do
 	case "$1" in
+		-c | --c | -cat | --cat )
+			shift
+			BOOKCAT="${1}"
+			;;
 		-b | --b | -book | --book )
 			shift
 			BOOKID="${1}"
