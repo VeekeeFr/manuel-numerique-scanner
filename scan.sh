@@ -72,6 +72,8 @@ function processBook
 
 			echo "		-> Downloading epub"
 			curl -q -o ${BOOK_DIR}/book.epub http://dl.manuel-numerique.com//BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/${3}-1_2-${BOOK_IDENTIFIER}.epub
+		else
+			echo "Failed! Book seems to have gotten away..."
 		fi
 
 		echo "		-> Building archive"
