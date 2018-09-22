@@ -7,12 +7,13 @@ SCRIPTNAME=`basename ${SCRIPTFULLNAME}`
 function usage
 {
 	echo "Usage:"
-	echo "${0} [-cat <cat-id>] [-book <book-id>]"
+	echo "${0} [-cat <cat-id>] [-book <book-id>] [-force]"
 	exit ${1}
 }
 
 BOOKCAT=$(seq 1 9)
 BOOKID=$(seq 1000 4000)
+FORCE_DOWNLOAD=false
 
 while [ $# -gt 0 ]
 do
@@ -24,6 +25,9 @@ do
 		-b | --b | -book | --book )
 			shift
 			BOOKID="${1}"
+			;;
+		-force | --force )
+			FORCE_DOWNLOAD=true
 			;;
 		-? | --? | -h | --h | -help | --help )
 			usage "0"
@@ -41,6 +45,10 @@ function processBook
 	echo "	-> Found book #${3} (${1}/${2})"
 	BOOK_TAR="${SCRIPTPATH}/${1}_${2}_${3}.tar.gz"
 	BOOK_DIR="${SCRIPTPATH}/${1}/${2}/${3}"
+	if [ ${FORCE_DOWNLOAD} ] && [ -f ${BOOK_TAR} ]
+	then
+		rm -rf ${BOOK_TAR}
+	fi
 	if [ ! -f ${BOOK_TAR} ]
 	then
 		echo "		-> Storage folder: ${BOOK_DIR}"
