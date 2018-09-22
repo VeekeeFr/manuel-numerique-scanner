@@ -11,7 +11,7 @@ function usage
 	exit ${1}
 }
 
-BOOKCAT=$(seq 1 4)
+BOOKCAT=$(seq 1 9)
 BOOKID=$(seq 1000 4000)
 
 while [ $# -gt 0 ]
