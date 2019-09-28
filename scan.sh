@@ -13,7 +13,7 @@ function usage
 
 BOOKCAT=$(seq 1 9)
 BOOKID=$(seq 1000 4000)
-BORDAS_FILLING="N2JiNDg5MjEwODg3MWI3MDA5NzkxNmNiOWU3MjJlZWY2OTBjNmRkNDZkNjNlMzY1ZjUwYzg2NWNiZDg2ZDk0MjFkNzQ2M2NkMzg4NGE5ZDg4ODU1YmZjZDQ3ZGE4YTk5MDQ0MGUzYzU"
+BORDAS_FILLING="NDc4NWUyMGU2NTFkZmE0ZjgzN2IzZWFlYjNhZDI0NTFiNGNjM2Y2MTFkZWE3N2ExNzdiYjg0MzNlNGE0ZGZiOTgyZjJmNzA2MmFmZDc0MWIxOWQyNmViZWY2MTI5ZGNhMjU0YWVkN2Y"
 FORCE_DOWNLOAD=false
 BOOK_TIMER=5
 
@@ -59,7 +59,7 @@ function processBook
 	then
 		echo "		-> Storage folder: ${BOOK_DIR}"
 		mkdir -p ${BOOK_DIR}
-		curl -q  -o ${BOOK_DIR}/content.txt https://biblio.manuel-numerique.com/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/content.opf
+		curl -sS -q -o ${BOOK_DIR}/content.txt https://biblio.editions-bordas.fr/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/content.opf
 		BOOK_TITLE=`cat ${BOOK_DIR}/content.txt | grep "<dc:title id=\"title1\">" | awk -F'>' '{ print $2 }' | awk -F'<' '{ print $1 }'`
 		BOOK_IDENTIFIER=`cat ${BOOK_DIR}/content.txt | grep "<dc:identifier " | awk -F'>' '{ print $2 }' | awk -F'<' '{ print $1 }'`
 		BOOK_PAGELIST=`cat ${BOOK_DIR}/content.txt | grep "\.xhtml" | grep "Page" | awk -F'href="' '{ print $2 }' | awk -F'"' '{ print $1 }' | tr '\n' ',' | sed 's#,#","#g'`
@@ -72,11 +72,11 @@ function processBook
 				RESSOURCE_NAME=`basename $file`
 				mkdir -p ${BOOK_DIR}/${RESSOURCE_FOLDER}
 				echo "		# Processing file: ${RESSOURCE_NAME} (target: ${BOOK_DIR}/${RESSOURCE_FOLDER})"
-				curl -q -o ${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} https://biblio.manuel-numerique.com/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} || echo "			! ERROR"
+				curl -sS -q -o ${BOOK_DIR}/${RESSOURCE_FOLDER}/${RESSOURCE_NAME} https://biblio.editions-bordas.fr/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/online/OEBPS/${file} || echo "			! ERROR"
 			done
 
 			echo "		-> Downloading epub"
-			curl -q -o ${BOOK_DIR}/book.epub http://dl.manuel-numerique.com//BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/${3}-1_2-${BOOK_IDENTIFIER}.epub
+			curl -sS -q -o ${BOOK_DIR}/book.epub http://dl.editions-bordas.fr//BORDAS/bibliomanuels/distrib_gp/${1}/${2}/${3}/${3}-1_2-${BOOK_IDENTIFIER}.epub
 
 			echo "		-> Building archive"
 			cp ${SCRIPTPATH}/index.html ${BOOK_DIR}
@@ -103,7 +103,7 @@ do
 	for book in ${BOOKID}
 	do
 		echo "Scanning ${book}"
-		curl -q -o /dev/null https://biblio.manuel-numerique.com/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/1/${bookcat}/${book}/online/OEBPS/content.opf  && processBook 1 ${bookcat} ${book}
+		curl -sS -q -o /dev/null https://biblio.editions-bordas.fr/epubs/web/${BORDAS_FILLING}/BORDAS/bibliomanuels/distrib_gp/1/${bookcat}/${book}/online/OEBPS/content.opf  && processBook 1 ${bookcat} ${book}
 	done
 done
 
