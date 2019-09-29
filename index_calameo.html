@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>{{ title }}</title>
+        <meta charset="utf-8"/>
+	<style>
+a:link, a:visited {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a#next:link, a#next:visited {
+    border: 2px solid green;
+}
+a#next:hover, a#next:active {
+    background-color: green;
+    color: white;
+}
+
+a#previous:link, a#previous:visited {
+    border: 2px solid red;
+}
+a#previous:hover, a#previous:active {
+    background-color: red;
+    color: white;
+}
+
+a#toc:link, a#toc:visited {
+    border: 2px solid navy;
+}
+a#toc:hover, a#toc:active {
+    background-color: navy;
+    color: white;
+}
+
+td,th {
+	text-align: center;
+}
+	</style>
+	<script language="javascript">
+		var currentPage = 1;
+		var maxPage = {{ pagecount }};
+
+		function setPage(pageIndex)
+		{
+			currentPage = pageIndex;
+			if(currentPage == 0)
+				currentPage = 1;
+			if(currentPage > maxPage)
+				currentPage = maxPage;
+			document.getElementById("currentPage").value = pageIndex;
+			document.getElementById("mycontent").src = "page_" + currentPage + ".svg";
+		}
+
+		function onNext()
+		{
+			setPage(currentPage + 1);
+		}
+
+		function onPrevious()
+		{
+			setPage(currentPage - 1);
+		}
+
+		function onCover()
+		{
+			setPage(1);
+		}
+	</script>
+    </head>
+	<body>
+		<table border="0" width="1024"><tr ><td width="10%"><a href="javascript:onCover();" id="toc">Couverture</a></td><td width="40%"><a href="javascript:onPrevious();" id="previous">Précédent</a></td><td width="20%"><input id="currentPage" type="text" value="" onkeyup="setPage(this.value);" /></td><td width="40%"><a href="javascript:onNext();" id="next">Suivant</a></td></tr></table>
+		<image id="mycontent" src="" height="1200" frameborder="0" />
+		<script language="javascript">
+			onCover();
+		</script>
+	</body>
+</html>
